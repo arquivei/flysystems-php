@@ -73,5 +73,53 @@ Then, create the config in filesystem.php
     'visibility' =>  env('GOOGLE_CLOUD_STORAGE_API_URI', 'private'), 
 ],
 ```
+You must need an adapter like:
 
+```php
+class IlluminateStorageAdapter
+{
+
+    private $storage;
+
+    public function __construct()
+    {
+        $client = \Storage::cloud()
+            ->getDriver()
+            ->getAdapter()
+            ->getClient();
+
+        if ($client instanceof GcsClient) {
+            $this->storage = new GoogleCloudStorage($client);
+        }
+
+        if ($client instanceof S3Client) {
+            $this->storage = new AmazonAwsStorage($client);
+        }
+
+        throw new StorageNotFoundException();
+    }
+
+    public function setBucket(String $bucket) : IlluminateStorageAdapter
+    {
+        $this->storage->setBucket($bucket);
+        return $this;
+    }
+
+    public function setBasePath(String $basePath) : IlluminateStorageAdapter
+    {
+        $this->storage->setBasePath($basePath);
+        return $this;
+    }
+
+    public function getObjectAsync(array $keys): array
+    {
+        return $this->storage->getObjectAsync($keys);
+    }
+
+    public function putObject(String $data, String $key, String $acl = "private") : String
+    {
+        return $this->storage->putObject($data, $key, $acl);
+    }
+}
+```
 
