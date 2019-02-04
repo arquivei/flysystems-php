@@ -18,5 +18,7 @@
     "psr-4": {
       "Arquivei\\Flysystems\\": "src/"
     }
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
