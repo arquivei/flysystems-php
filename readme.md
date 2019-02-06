@@ -7,7 +7,7 @@ This project is based-on League\Flysystem [http://flysystem.thephpleague.com/doc
 ## Installation
 
 ```bash
-composer require arquivei/flysystems-php
+composer require arquivei/flysystem-php:1.0.0
 ```
 
 ## How to use
@@ -55,7 +55,7 @@ The first step you need to do is register the service provider in app.php
 
 ```php
 'providers' => [
-    Arquivei\Flysystems\GoogleCloudStorage\GoogleCloudStorageServiceProvider::class,
+    Arquivei\Flysystems\GoogleCloudStorage\GoogleCloudStorageProvider::class,
 ]
 ```
 
@@ -88,7 +88,7 @@ class IlluminateStorageAdapter
             ->getAdapter()
             ->getClient();
 
-        if ($client instanceof GcsClient) {
+        if ($client instanceof StorageClient) {
             $this->storage = new GoogleCloudStorage($client);
         }
 
@@ -96,7 +96,9 @@ class IlluminateStorageAdapter
             $this->storage = new AmazonAwsStorage($client);
         }
 
-        throw new StorageNotFoundException();
+        if((!$client instanceof StorageClient) && (!$client instanceof S3Client)){
+            throw new StorageNotFoundException();
+        }
     }
 
     public function setBucket(String $bucket) : IlluminateStorageAdapter
