@@ -44,7 +44,7 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
         }
     }
 
-    public function putObject(string $data, string $key, string $acl = "private") : String
+    public function putObject(string $data, string $key, string $acl = "private"): String
     {
 
         try {
@@ -60,7 +60,37 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
             return $storageObject->info()['name'];
 
         } catch (\Throwable $throwable) {
-            if ($throwable instanceof GoogleException ) {
+            if ($throwable instanceof GoogleException) {
+                throw new ArquiveiStorageException($throwable);
+            }
+
+            throw $throwable;
+        }
+    }
+
+    public function putObjectWithSignedUrlReturn(
+        string $data,
+        string $key,
+        \DateTime $expireDate,
+        string $acl = "private"
+    ): array {
+        try {
+            $bucket = $this->client->bucket($this->bucket);
+            $storageObject = $bucket->upload(
+                $data,
+                [
+                    'name' => $key,
+                    'predefinedAcl' => $acl
+                ]
+            );
+
+            return [
+                "object_info" => $storageObject->info()['name'],
+                "signed_url" => $storageObject->signedUrl($expireDate)
+            ];
+
+        } catch (\Throwable $throwable) {
+            if ($throwable instanceof GoogleException) {
                 throw new ArquiveiStorageException($throwable);
             }
 
