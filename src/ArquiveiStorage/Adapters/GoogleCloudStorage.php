@@ -11,7 +11,6 @@ use GuzzleHttp\Promise;
 
 class GoogleCloudStorage extends AbstractStorage implements StorageInterface
 {
-
     private $client;
 
     public function __construct(StorageClient $client)
@@ -36,6 +35,21 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
             return array_map(function ($object) {
                 return $object->getContents();
             }, $objects);
+        } catch (\Throwable $throwable) {
+            if ($throwable instanceof GoogleException) {
+                throw new ArquiveiStorageException($throwable);
+            }
+            throw $throwable;
+        }
+    }
+
+    public function exists(string $key)
+    {
+        try {
+            $bucket = $this->client->bucket($this->bucket);
+            $storageObject = $bucket->object($this->key($key));
+            return $storageObject->exists();
+
         } catch (\Throwable $throwable) {
             if ($throwable instanceof GoogleException) {
                 throw new ArquiveiStorageException($throwable);
