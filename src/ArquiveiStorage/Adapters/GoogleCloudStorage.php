@@ -24,9 +24,9 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
             $bucket = $this->client->bucket($this->bucket);
 
             $promises = [];
-            foreach ($keys as $key) {
-                $storageObject = $bucket->object($this->key($key));
-                $promises[] = $storageObject->downloadAsStreamAsync()
+            foreach ($keys as $key => $object) {
+                $storageObject = $bucket->object($this->key($object));
+                $promises[$key] = $storageObject->downloadAsStreamAsync()
                     ->then(function (\Psr\Http\Message\StreamInterface $data) {
                         return $data;
                     });
@@ -58,17 +58,21 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
         }
     }
 
-    public function putObject(string $data, string $key, string $acl = "private"): String
+    public function putObject(string $data, string $key, ?string $acl = null): string
     {
+        $options = [
+            'name' => $key
+        ];
+
+        if (!is_null($acl)) {
+            $options['predefinedAcl'] = $acl;
+        }
 
         try {
             $bucket = $this->client->bucket($this->bucket);
             $storageObject = $bucket->upload(
                 $data,
-                [
-                    'name' => $key,
-                    'predefinedAcl' => $acl
-                ]
+                $options
             );
 
             return $storageObject->info()['name'];
@@ -86,16 +90,21 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
         string $data,
         string $key,
         \DateTime $expireDate,
-        string $acl = "private"
+        ?string $acl = null
     ): array {
         try {
+            $options = [
+                'name' => $key
+            ];
+
+            if (!is_null($acl)) {
+                $options['predefinedAcl'] = $acl;
+            }
+
             $bucket = $this->client->bucket($this->bucket);
             $storageObject = $bucket->upload(
                 $data,
-                [
-                    'name' => $key,
-                    'predefinedAcl' => $acl
-                ]
+                $options
             );
 
             return [
