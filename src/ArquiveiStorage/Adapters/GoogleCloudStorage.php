@@ -64,7 +64,7 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
             'name' => $key
         ];
 
-        if ($acl) {
+        if (!is_null($acl)) {
             $options['predefinedAcl'] = $acl;
         }
 
@@ -97,7 +97,7 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
                 'name' => $key
             ];
 
-            if ($acl) {
+            if (!is_null($acl)) {
                 $options['predefinedAcl'] = $acl;
             }
 
