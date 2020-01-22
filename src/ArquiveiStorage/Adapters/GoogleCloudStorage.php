@@ -24,9 +24,9 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
             $bucket = $this->client->bucket($this->bucket);
 
             $promises = [];
-            foreach ($keys as $key) {
-                $storageObject = $bucket->object($this->key($key));
-                $promises[] = $storageObject->downloadAsStreamAsync()
+            foreach ($keys as $key => $object) {
+                $storageObject = $bucket->object($this->key($object));
+                $promises[$key] = $storageObject->downloadAsStreamAsync()
                     ->then(function (\Psr\Http\Message\StreamInterface $data) {
                         return $data;
                     });
