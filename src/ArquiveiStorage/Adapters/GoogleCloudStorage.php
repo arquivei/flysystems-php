@@ -58,17 +58,21 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
         }
     }
 
-    public function putObject(string $data, string $key, string $acl = "private"): String
+    public function putObject(string $data, string $key, ?string $acl = null): string
     {
+        $options = [
+            'name' => $key
+        ];
+
+        if ($acl) {
+            $options['predefinedAcl'] = $acl;
+        }
 
         try {
             $bucket = $this->client->bucket($this->bucket);
             $storageObject = $bucket->upload(
                 $data,
-                [
-                    'name' => $key,
-                    'predefinedAcl' => $acl
-                ]
+                $options
             );
 
             return $storageObject->info()['name'];
@@ -86,16 +90,21 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
         string $data,
         string $key,
         \DateTime $expireDate,
-        string $acl = "private"
+        ?string $acl = null
     ): array {
         try {
+            $options = [
+                'name' => $key
+            ];
+
+            if ($acl) {
+                $options['predefinedAcl'] = $acl;
+            }
+
             $bucket = $this->client->bucket($this->bucket);
             $storageObject = $bucket->upload(
                 $data,
-                [
-                    'name' => $key,
-                    'predefinedAcl' => $acl
-                ]
+                $options
             );
 
             return [
