@@ -51,8 +51,9 @@ class GoogleCloudStorageProvider extends ServiceProvider
                         'projectId' => $config['project_id'],
                         'keyFilePath' => $config['key_file'],
                         'restRetryFunction' => function ($exception) {
-                           Log::error(
-                                'Error to find documents with GCS. Execute function retry',
+                            Log::error(
+                                '[Arquivei/flysystems-php::GoogleCloudStorage] ' .
+                                'Error executing a function on GCS. The function will be retried',
                                 [
                                     'exception' => $exception,
                                 ]
@@ -69,7 +70,6 @@ class GoogleCloudStorageProvider extends ServiceProvider
             }
         );
     }
-
 
     /**
      * Register bindings in the container.
