@@ -7,6 +7,7 @@ use Arquivei\Flysystems\GoogleCloudStorage\Adapters\GoogleStorageAdapter;
 use Google\Cloud\Storage\StorageClient;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Cached\CachedAdapter;
@@ -39,21 +40,36 @@ class GoogleCloudStorageProvider extends ServiceProvider
      */
     public function boot()
     {
-        $factory = $this->app->make('filesystem'); /* @var FilesystemManager $factory */
+        $factory = $this->app->make('filesystem');
+        /* @var FilesystemManager $factory */
 
-        $factory->extend('gcs', function ($app, $config) {
-            $storageClient = new StorageClient([
-                'projectId' => $config['project_id'],
-                'keyFilePath' => $config['key_file'],
-            ]);
-            $bucket = $storageClient->bucket($config['bucket']);
-            $pathPrefix = $config['path_prefix'];
+        $factory->extend(
+            'gcs',
+            function ($app, $config) {
+                $storageClient = new StorageClient(
+                    [
+                        'projectId' => $config['project_id'],
+                        'keyFilePath' => $config['key_file'],
+                        'restRetryFunction' => function ($exception) {
+                            Log::error(
+                                '[Arquivei/flysystems-php::GoogleCloudStorage] ' .
+                                'Error executing a function on GCS. The function will be retried',
+                                [
+                                    'exception' => $exception,
+                                ]
+                            );
+                            return true;
+                        },
+                    ]
+                );
+                $bucket = $storageClient->bucket($config['bucket']);
+                $pathPrefix = $config['path_prefix'];
 
-            $adapter = new GoogleStorageAdapter($storageClient, $bucket, $pathPrefix, $config);
-            return $this->createFilesystem($adapter, $config);
-        });
+                $adapter = new GoogleStorageAdapter($storageClient, $bucket, $pathPrefix, $config);
+                return $this->createFilesystem($adapter, $config);
+            }
+        );
     }
-
 
     /**
      * Register bindings in the container.
