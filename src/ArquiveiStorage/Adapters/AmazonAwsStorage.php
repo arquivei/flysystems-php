@@ -35,7 +35,7 @@ class AmazonAwsStorage extends AbstractStorage implements StorageInterface
             }, $objects);
         } catch (\Throwable $throwable) {
             if ($throwable instanceof S3Exception) {
-                throw new ArquiveiStorageException($throwable);
+                throw new ArquiveiStorageException($throwable, $throwable->getCode(), $throwable->getMessage());
             }
             throw $throwable;
         }
@@ -52,7 +52,7 @@ class AmazonAwsStorage extends AbstractStorage implements StorageInterface
             ]);
         } catch (\Throwable $throwable) {
             if ($throwable instanceof S3Exception) {
-                throw new ArquiveiStorageException($throwable);
+                throw new ArquiveiStorageException($throwable, $throwable->getCode(), $throwable->getMessage());
             }
             throw $throwable;
         }
