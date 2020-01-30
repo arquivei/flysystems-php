@@ -37,7 +37,7 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
             }, $objects);
         } catch (\Throwable $throwable) {
             if ($throwable instanceof GoogleException) {
-                throw new ArquiveiStorageException($throwable);
+                throw new ArquiveiStorageException($throwable, $throwable->getCode(), $throwable->getMessage());
             }
             throw $throwable;
         }
@@ -52,7 +52,7 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
 
         } catch (\Throwable $throwable) {
             if ($throwable instanceof GoogleException) {
-                throw new ArquiveiStorageException($throwable);
+                throw new ArquiveiStorageException($throwable, $throwable->getCode(), $throwable->getMessage());
             }
             throw $throwable;
         }
@@ -79,7 +79,7 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
 
         } catch (\Throwable $throwable) {
             if ($throwable instanceof GoogleException) {
-                throw new ArquiveiStorageException($throwable);
+                throw new ArquiveiStorageException($throwable, $throwable->getCode(), $throwable->getMessage());
             }
 
             throw $throwable;
@@ -114,7 +114,7 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
 
         } catch (\Throwable $throwable) {
             if ($throwable instanceof GoogleException) {
-                throw new ArquiveiStorageException($throwable);
+                throw new ArquiveiStorageException($throwable, $throwable->getCode(), $throwable->getMessage());
             }
 
             throw $throwable;
