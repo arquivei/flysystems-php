@@ -3,11 +3,11 @@
 
 namespace Arquivei\Flysystems\GoogleCloudStorage;
 
+use Arquivei\Flysystems\ArquiveiStorage\Adapters\LogMonologAdapter;
 use Arquivei\Flysystems\GoogleCloudStorage\Adapters\GoogleStorageAdapter;
 use Google\Cloud\Storage\StorageClient;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Cached\CachedAdapter;
@@ -15,6 +15,7 @@ use League\Flysystem\Filesystem;
 
 class GoogleCloudStorageProvider extends ServiceProvider
 {
+    private $logger;
     /**
      * Create a Filesystem instance with the given adapter.
      *
@@ -41,6 +42,7 @@ class GoogleCloudStorageProvider extends ServiceProvider
     public function boot()
     {
         $factory = $this->app->make('filesystem'); /* @var FilesystemManager $factory */
+        $this->logger = new LogMonologAdapter();
 
         $factory->extend(
             'gcs',
@@ -50,11 +52,12 @@ class GoogleCloudStorageProvider extends ServiceProvider
                         'projectId' => $config['project_id'],
                         'keyFilePath' => array_get($config, 'key_file'),
                         'restRetryFunction' => function ($exception) {
-                            Log::error(
+                            $this->logger->error(
                                 '[Arquivei/flysystems-php::GoogleCloudStorage] ' .
                                 'Error executing a function on GCS. The function will be retried',
                                 [
-                                    'exception' => $exception,
+                                    'message' => $exception->getMessage(),
+                                    'exception' => get_class($exception),
                                 ]
                             );
                             return true;
