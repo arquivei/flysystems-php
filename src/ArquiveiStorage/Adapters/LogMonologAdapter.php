@@ -22,38 +22,32 @@ class LogMonologAdapter
         });
     }
 
-    public function alert(string $message, array $context = []): bool
+    public function alert(string $message, array $context = []): void
     {
-        return $this->log->addAlert($message, $context);
+        $this->log->alert($message, $context);
     }
-
-    public function debug(string $message, array $context = []): bool
+    public function debug(string $message, array $context = []): void
     {
-        return $this->log->addDebug($message, $context);
+        $this->log->debug($message, $context);
     }
-
-    public function emergency(string $message, array $context = []): bool
+    public function emergency(string $message, array $context = []): void
     {
-        return $this->log->addEmergency($message, $context);
+        $this->log->emergency($message, $context);
     }
-
-    public function error(string $message, array $context = []): bool
+    public function error(string $message, array $context = []): void
     {
-        return $this->log->addError($message, $context);
+        $this->log->error($message, $context);
     }
-
-    public function info(string $message, array $context = []): bool
+    public function info(string $message, array $context = []): void
     {
-        return $this->log->addInfo($message, $context);
+        $this->log->info($message, $context);
     }
-
-    public function notice(string $message, array $context = []): bool
+    public function notice(string $message, array $context = []): void
     {
-        return $this->log->addNotice($message, $context);
+        $this->log->notice($message, $context);
     }
-
-    public function warning(string $message, array $context = []): bool
+    public function warning(string $message, array $context = []): void
     {
-        return $this->log->warning($message, $context);
+        $this->log->warning($message, $context);
     }
 }
