@@ -4,6 +4,14 @@ Google Cloud Storage and Amazon S3 adapters for php.
 
 This project is based-on League\Flysystem [http://flysystem.thephpleague.com/docs/].
 
+## Version Compatibility
+
+ Releases | Laravel
+:---------|:--------
+ 3.x      | ^7.15
+ 2.x      | ^6.0
+ 1.x      | ^5.7
+ 
 ## Installation
 
 ```bash
