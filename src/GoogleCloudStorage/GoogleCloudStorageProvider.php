@@ -43,7 +43,6 @@ class GoogleCloudStorageProvider extends ServiceProvider
     {
         $factory = $this->app->make('filesystem'); /* @var FilesystemManager $factory */
         $this->logger = new LogMonologAdapter();
-
         $factory->extend(
             'gcs',
             function ($app, $config) {
@@ -60,6 +59,9 @@ class GoogleCloudStorageProvider extends ServiceProvider
                                     'exception' => get_class($exception),
                                 ]
                             );
+                            if ($exception->getCode() == 404) {
+                                return false;
+                            }
                             return true;
                         },
                     ]
