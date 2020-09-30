@@ -49,7 +49,7 @@ class GoogleCloudStorageProvider extends ServiceProvider
                 $storageClient = new StorageClient(
                     [
                         'projectId' => $config['project_id'],
-                        'keyFilePath' => array_get($config, 'key_file'),
+                        'keyFilePath' => $config['key_file'],
                         'restRetryFunction' => function ($exception) {
                             $this->logger->error(
                                 '[Arquivei/flysystems-php::GoogleCloudStorage] ' .
@@ -67,7 +67,8 @@ class GoogleCloudStorageProvider extends ServiceProvider
                     ]
                 );
                 $bucket = $storageClient->bucket($config['bucket']);
-                $pathPrefix = array_get($config, 'path_prefix');;
+                $pathPrefix = $config['path_prefix'];
+
                 $adapter = new GoogleStorageAdapter($storageClient, $bucket, $pathPrefix, $config);
                 return $this->createFilesystem($adapter, $config);
             }
