@@ -8,6 +8,7 @@ This project is based-on League\Flysystem [http://flysystem.thephpleague.com/doc
 
  Releases | Laravel
 :---------|:--------
+ 4.x      | ^8.0
  3.x      | ^7.15
  2.x      | ^6.0
  1.x      | ^5.7
