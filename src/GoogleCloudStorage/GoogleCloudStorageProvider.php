@@ -16,11 +16,12 @@ use League\Flysystem\Filesystem;
 class GoogleCloudStorageProvider extends ServiceProvider
 {
     private $logger;
+
     /**
      * Create a Filesystem instance with the given adapter.
      *
-     * @param  \League\Flysystem\AdapterInterface  $adapter
-     * @param  array  $config
+     * @param \League\Flysystem\AdapterInterface $adapter
+     * @param array $config
      * @return \League\Flysystem\FilesystemInterface
      */
     protected function createFilesystem(AdapterInterface $adapter, array $config)
@@ -60,6 +61,11 @@ class GoogleCloudStorageProvider extends ServiceProvider
                                     'exception' => get_class($exception),
                                 ]
                             );
+
+                            if ($exception->getCode() == 404) {
+                                return false;
+                            }
+
                             return true;
                         },
                     ]
