@@ -6,13 +6,13 @@ This project is based-on League\Flysystem [http://flysystem.thephpleague.com/doc
 
 ## Version Compatibility
 
- Releases | Laravel
-:---------|:--------
- 4.x      | ^8.0
- 3.x      | ^7.15
- 2.x      | ^6.0
- 1.x      | ^5.7
- 
+| Releases | Laravel |
+|:---------|:--------|
+| 4.x      | ^8.0    |
+| 3.x      | ^7.15   |
+| 2.x      | ^6.0    |
+| 1.x      | ^5.7    |
+
 ## Installation
 
 ```bash
@@ -134,3 +134,7 @@ class IlluminateStorageAdapter
 }
 ```
 
+## Maintainers
+André Lázari <andre.lazari@arquivei.com.br>
+
+Thales Castro <thales.mendes@arquivei.com.br>
