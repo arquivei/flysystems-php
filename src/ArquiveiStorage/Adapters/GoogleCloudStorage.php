@@ -47,7 +47,6 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
     {
         try {
             $bucket = $this->client->bucket($this->bucket);
-
             $storageObjects = $bucket->objects(['prefix' => $prefix]);
 
             $objectsMetadata = [];
