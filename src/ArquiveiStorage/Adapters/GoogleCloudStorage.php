@@ -43,6 +43,26 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
         }
     }
 
+    public function getObjectsMetadataByPrefix(string $prefix): array
+    {
+        try {
+            $bucket = $this->client->bucket($this->bucket);
+            $storageObjects = $bucket->objects(['prefix' => $prefix]);
+
+            $objectsMetadata = [];
+            foreach ($storageObjects as $storageObject) {
+                $objectsMetadata[] = $storageObject->info();
+            }
+
+            return $objectsMetadata;
+        } catch (\Throwable $throwable) {
+            if ($throwable instanceof GoogleException) {
+                throw new ArquiveiStorageException($throwable, $throwable->getCode(), $throwable->getMessage());
+            }
+            throw $throwable;
+        }
+    }
+
     public function exists(string $key)
     {
         try {
