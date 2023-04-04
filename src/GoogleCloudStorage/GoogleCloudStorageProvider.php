@@ -15,6 +15,7 @@ use League\Flysystem\Filesystem;
 
 class GoogleCloudStorageProvider extends ServiceProvider
 {
+    private const LOG_PREFIX = '[Arquivei/flysystems-php::GoogleCloudStorage] ';
     private $logger;
 
     /**
@@ -52,19 +53,33 @@ class GoogleCloudStorageProvider extends ServiceProvider
                     [
                         'projectId' => $config['project_id'],
                         'keyFilePath' => $config['key_file'],
-                        'restRetryFunction' => function ($exception) {
+                        'restRetryFunction' => function ($exception) use ($config) {
+                            if ($exception->getCode() == 404) {
+                                $this->logger->info(
+                                    self::LOG_PREFIX . 'Not found on GCS.',
+                                    [
+                                        'message' => $exception->getMessage(),
+                                        'exception' => get_class($exception),
+                                        'data' => [
+                                            'project_id' => $config['project_id'],
+                                            'key_file_path' => $config['key_file'],
+                                        ]
+                                    ]
+                                );
+                                return false;
+                            }
+
                             $this->logger->error(
-                                '[Arquivei/flysystems-php::GoogleCloudStorage] ' .
-                                'Error executing a function on GCS. The function will be retried',
+                                self::LOG_PREFIX . 'Error executing a function on GCS. The function will be retried',
                                 [
                                     'message' => $exception->getMessage(),
                                     'exception' => get_class($exception),
+                                    'data' => [
+                                        'project_id' => $config['project_id'],
+                                        'key_file_path' => $config['key_file'],
+                                    ]
                                 ]
                             );
-
-                            if ($exception->getCode() == 404) {
-                                return false;
-                            }
 
                             return true;
                         },
