@@ -29,7 +29,7 @@ class AmazonAwsStorage extends AbstractStorage implements StorageInterface
                     'Key' => $this->key($key),
                 ]);
             }
-            $objects = Promise\unwrap($promises);
+            $objects = Promise\Utils::unwrap($promises);
             return array_map(function ($object) {
                 return $object['Body']->getContents();
             }, $objects);
