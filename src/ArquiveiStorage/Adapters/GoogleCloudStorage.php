@@ -31,7 +31,7 @@ class GoogleCloudStorage extends AbstractStorage implements StorageInterface
                         return $data;
                     });
             }
-            $objects = Promise\unwrap($promises);
+            $objects = Promise\Utils::unwrap($promises);
             return array_map(function ($object) {
                 return $object->getContents();
             }, $objects);
